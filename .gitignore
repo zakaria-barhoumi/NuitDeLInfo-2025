@@ -1,9 +1,41 @@
-# Default ignored files
-/shelf/
-/.idea/workspace.xml
-# Editor-based HTTP Client requests
-/httpRequests/
-# Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
+# Node modules
+node_modules/
+
+# Build directories
+dist/
+dist-ssr/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor directories and files
 .idea/
+.vscode/
+
+# Operating system files
+.DS_Store
+
+# Temporary files
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.local
+
+# Specific to JetBrains (IntelliJ/WebStorm) IDE
+.idea/workspace.xml
+
+# HTTP Client requests (specific to IDEs like WebStorm)
+httpRequests/
+
+# Datasource local storage files (specific to IDEs like WebStorm)
+dataSources/
+dataSources.local.xml
+
