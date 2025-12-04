@@ -225,9 +225,9 @@ function Room1() {
     }, []);
 
     const characters = [
-        { id: 1, label: 'Eco-Warrior', position: { top: '20%', left: '25%' }, color: '#7c3aed' },
-        { id: 2, label: 'Data-Sage', position: { top: '55%', left: '75%' }, color: '#db2777' },
-        { id: 3, label: 'Inclusivity-Advocate', position: { top: '85%', left: '40%' }, color: '#ea580c' },
+        { id: 1, label: 'Raileygh', position: { top: '20%', left: '25%' }, color: '#7c3aed' },
+        { id: 2, label: 'Luffy', position: { top: '55%', left: '75%' }, color: '#db2777' },
+        { id: 3, label: 'Zoro', position: { top: '85%', left: '40%' }, color: '#ea580c' },
     ];
 
     const handleNodeClick = (character) => {
@@ -254,7 +254,7 @@ function Room1() {
 
                     {/* The Blue Player Circle */}
                     <div className="main-player" style={{ top: playerPos.top, left: playerPos.left }}>
-                        <span className="player-name-tag">Player</span>
+                        <span className="player-name-tag"></span>
                     </div>
 
                     <div className="nodes-container">
