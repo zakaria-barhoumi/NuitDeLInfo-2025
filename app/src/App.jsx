@@ -1,15 +1,17 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import HomePage from './HomePage';
-import Quiz from './Quiz';
+import Room from './Room';
+import Room1 from './Room1';
+import Character from './Character';
 import './App.css';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/quiz" element={<Quiz />} />
+        <Route path="/" element={<Room />} />
+        <Route path="/room1" element={<Room1 />} />
+        <Route path="/character/:id" element={<Character />} />
       </Routes>
     </Router>
   );
