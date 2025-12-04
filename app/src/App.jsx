@@ -1,16 +1,18 @@
-import React from 'react';
-import './App.css';
+// src/App.jsx
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import VillageMap from './VillageMap';
+
+// Tu créeras ces fichiers plus tard pour les vraies salles
+const Salle1 = () => <h1 style={{ color: 'white' }}>Bienvenue Salle 1</h1>;
 
 function App() {
   return (
-    <div className="App">
-      <div className="container">
-        <p className="name">Rayen</p>
-        <div className="test-word-container">
-          <p className="test-word">test</p>
-        </div>
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<VillageMap />} />
+        <Route path="/salle1" element={<Salle1 />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
