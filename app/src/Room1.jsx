@@ -111,8 +111,8 @@ const styles = `
 
 /* Avatar Circle for Character Images */
 .avatar-circle {
-    width: 4.5rem;
-    height: 4.5rem;
+    width: 20rem;
+    height: 20rem;
     border-radius: 50%;
     overflow: hidden; 
     display: flex;
@@ -126,15 +126,38 @@ const styles = `
 
 @media (min-width: 768px) {
     .avatar-circle {
-        width: 6rem;
-        height: 6rem;
+        width: 10rem;
+        height: 10rem;
     }
 }
 
 .node-image {
     width: 100%;
     height: 100%;
-    object-fit: cover; 
+    object-fit: center; 
+}
+
+/* --- LINES BETWEEN CHARACTERS --- */
+.connection-line {
+    position: absolute;
+    background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.6), rgba(255,255,255,0.3));
+    height: 3px;
+    transform-origin: left center;
+    pointer-events: none;
+    z-index: 5;
+    animation: line-draw 0.8s ease-out forwards;
+    box-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
+@keyframes line-draw {
+    from { 
+        width: 0;
+        opacity: 0;
+    }
+    to { 
+        width: 100%;
+        opacity: 1;
+    }
 }
 
 .avatar-circle:not(.locked):hover {
@@ -199,6 +222,30 @@ const PlayerNode = ({ id, label, image, position, color, onClick, isLocked }) =>
     </div>
 );
 
+// Fonction pour calculer la position et rotation d'une ligne entre deux points
+const calculateLineStyle = (from, to) => {
+    // Convertir les pourcentages en pixels (approximatif pour le calcul)
+    const fromTop = parseFloat(from.top);
+    const fromLeft = parseFloat(from.left);
+    const toTop = parseFloat(to.top);
+    const toLeft = parseFloat(to.left);
+
+    // Calculer la distance
+    const deltaX = toLeft - fromLeft;
+    const deltaY = toTop - fromTop;
+    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+    // Calculer l'angle
+    const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+
+    return {
+        top: `${fromTop}%`,
+        left: `${fromLeft}%`,
+        width: `${distance}%`,
+        transform: `rotate(${angle}deg)`,
+    };
+};
+
 function Room1() {
     const navigate = useNavigate();
     const [playerPos, setPlayerPos] = useState({ top: '50%', left: '-150%' });
@@ -211,9 +258,25 @@ function Room1() {
     }, []);
 
     const charactersList = [
-        { id: 1, ...charactersData['1'], position: { top: '-20%', left: '30%' }, color: '#ffd700' },
-        { id: 3, ...charactersData['3'], position: { top: '80%', left: '35%' }, color: '#22c55e' },
-        { id: 2, ...charactersData['2'], position: { top: '50%', left: '80%' }, color: '#ef4444' },
+        { id: 1, ...charactersData['1'], position: { top: '-20%', left: '-30%' }, color: '#ffd700' },
+        { id: 3, ...charactersData['3'], position: { top: '90%', left: '-20%' }, color: '#22c55e' },
+        { id: 2, ...charactersData['2'], position: { top: '40%', left: '90%' }, color: '#ef4444' },
+    ];
+
+    // 🎯 DÉFINIR LES CONNEXIONS
+    const connections = [
+        {
+            // Ligne Rayleigh -> Luffy (apparaît quand Luffy est débloqué)
+            from: charactersList.find(c => c.id === 1).position,
+            to: charactersList.find(c => c.id === 2).position,
+            showWhen: 2 // ID du personnage qui doit être débloqué
+        },
+        {
+            // Ligne Luffy -> Zoro (apparaît quand Zoro est débloqué)
+            from: charactersList.find(c => c.id === 2).position,
+            to: charactersList.find(c => c.id === 3).position,
+            showWhen: 3
+        }
     ];
 
     const isCharacterUnlocked = (id) => {
@@ -233,7 +296,7 @@ function Room1() {
 
         setPlayerPos({
             top: position.top,
-            left: `calc(${position.left} + 4rem)`
+            left: `calc(${position.left} + 10rem)`
         });
 
         setTimeout(() => {
@@ -259,6 +322,21 @@ function Room1() {
                     </div>
 
                     <div className="nodes-container">
+                        {/* 🎯 LIGNES DE CONNEXION */}
+                        {connections.map((conn, index) => {
+                            const isVisible = isCharacterUnlocked(conn.showWhen);
+                            if (!isVisible) return null;
+
+                            return (
+                                <div
+                                    key={`line-${index}`}
+                                    className="connection-line"
+                                    style={calculateLineStyle(conn.from, conn.to)}
+                                />
+                            );
+                        })}
+
+                        {/* LES PERSONNAGES */}
                         {charactersList.map(char => {
                             const unlocked = isCharacterUnlocked(char.id);
                             return (
