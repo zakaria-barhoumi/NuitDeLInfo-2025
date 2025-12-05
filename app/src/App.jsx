@@ -5,13 +5,13 @@ import 'react-toastify/dist/ReactToastify.css';
 
 // Composants de ton branch
 import Room from './Room';
-import Room1 from './Room1';
 import Character from './components/CharacterDisplay.jsx';
 import CharacterPage from "./pages/CharacterPage.jsx";
 
 // Composants du branch distant
 import VillageMap from './VillageMap';
 import HomePage from './HomePage';
+import Room1 from './Room1';
 
 import './App.css';
 
@@ -47,7 +47,7 @@ function App() {
                 <Route path="/village" element={<VillageMap />} />
 
                 {/* 🚪 Salles */}
-                <Route path="/salle1" element={<Salle1 />} />
+                <Route path="/salle1" element={<Room1 />} />
                 <Route path="/salle2" element={<Salle2 />} />
 
                 {/* Routes pour tes personnages (ajoute-les si nécessaire) */}
