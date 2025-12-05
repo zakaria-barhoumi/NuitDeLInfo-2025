@@ -2,6 +2,10 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useState } from "react";
+import useKonami from "./hooks/useKonami";
+import Snake from "./components/Snake";
+
 
 // Composants de ton branch
 import Room from './Room';
@@ -37,6 +41,12 @@ const Salle2 = () => (
 );
 
 function App() {
+    const [showSnake, setShowSnake] = useState(false);
+
+    useKonami(() => {
+    setShowSnake(true);
+});
+
     return (
         <Router>
             <Routes>
@@ -56,6 +66,7 @@ function App() {
             </Routes>
 
             <ToastContainer position="bottom-center" autoClose={5000} />
+            <Snake visible={showSnake} onClose={() => setShowSnake(false)} />
         </Router>
     );
 }
