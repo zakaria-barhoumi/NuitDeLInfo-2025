@@ -1,0 +1,200 @@
+/* ---------- STRUCTURE ---------- */
+
+.home-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Background with parallax animation */
+.bg-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 110%;
+  height: 110%;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.75);
+  transform: scale(1.05);
+  animation: parallax 12s infinite alternate ease-in-out;
+}
+
+@keyframes parallax {
+  0% { transform: translateX(0) scale(1.05); }
+  100% { transform: translateX(-25px) scale(1.05); }
+}
+
+
+/* ---------- INFO ICON ---------- */
+
+.info-circle {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  cursor: pointer;
+  color: white;
+  box-shadow: 0 0 12px rgba(255,255,255,0.4);
+  transition: 0.2s;
+  z-index: 50;
+}
+
+.info-circle:hover {
+  transform: scale(1.12);
+}
+
+
+/* ---------- POPUP + OVERLAY ---------- */
+
+.info-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(6px);
+  z-index: 900;
+}
+
+.info-popup {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  width: 420px;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.68);
+  padding: 25px;
+  border-radius: 22px;
+  color: white;
+  text-align: center;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 25px rgba(255, 90, 130, 0.5);
+  z-index: 1000;
+}
+
+.close-btn {
+  margin-top: 15px;
+  background: #ff77aa;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.close-btn:hover {
+  background: #ff5c98;
+}
+
+
+/* ---------- MAIN CARD ---------- */
+
+.card {
+  position: relative;
+  width: 65%;
+  margin: 130px auto;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(20px);
+  border-radius: 28px;
+  box-shadow: 0 0 40px rgba(255, 80, 120, 0.25);
+  text-align: center;
+  z-index: 10;
+}
+
+.title {
+  font-size: 40px;
+  font-weight: 700;
+  color: white;
+}
+
+.subtitle {
+  color: #e8dada;
+  margin-top: 5px;
+  margin-bottom: 30px;
+}
+
+
+/* ---------- CONTENT LAYOUT ---------- */
+
+.content-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+}
+
+.hero-img {
+  width: 180px;
+  image-rendering: pixelated;
+}
+
+
+/* ---------- BUTTON ---------- */
+
+.start-btn {
+  background-color: #ff77aa;
+  color: white;
+  padding: 15px 40px;
+  font-size: 20px;
+  border-radius: 18px;
+  border: none;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.start-btn:hover {
+  transform: scale(1.06);
+  background-color: #ff5c98;
+}
+
+.glow {
+  box-shadow: 0 0 18px #ff77aa, 0 0 28px #ff77aa;
+}
+
+
+/* ---------- ANIMATIONS ---------- */
+
+.fade-in {
+  animation: fade 0.4s ease forwards;
+}
+
+.fade-zoom {
+  animation: zoom 0.7s ease forwards;
+}
+
+.slide-left {
+  animation: slideLeft 0.7s ease forwards;
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes zoom {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+
+
+
