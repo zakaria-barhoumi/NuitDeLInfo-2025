@@ -5,4 +5,3 @@ Le Haki de l'Observation, c'est comme la maintenance prédictive...
 Il faut anticiper les bugs avant qu'ils ne crash your server.
 Prêt pour le test ?
 
-"Hahaha ! Tu veux naviguer sur la mer du numérique ? C'est bien beau d'avoir la fibre, gamin, mais la vitesse ne fait pas tout. J'ai vu trop de jeunes développeurs coder sans penser à l'avenir. Le Haki de l'Observation, c'est comme la maintenance prédictive : il faut anticiper les bugs avant qu'ils ne crash your server."
