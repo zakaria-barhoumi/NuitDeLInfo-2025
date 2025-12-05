@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { characters as charactersData } from './characterData.js';
 
 const styles = `
 /* Global Container */
@@ -25,27 +27,11 @@ const styles = `
     background-color: #3b82f6; /* Blue */
     border-radius: 50%;
     border: 3px solid white;
-    
-    /* Centering and Movement */
     transform: translate(-50%, -50%);
     transition: top 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), left 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
     z-index: 20;
-    
-    /* Hover Animation */
     animation: hover-float 2.5s ease-in-out infinite;
-    
-    /* Flex to center the text label */
-    display: flex;
-    align-items: center;
-    justify-content: center;
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
-}
-
-.player-name-tag {
-    font-size: 0.75rem;
-    font-weight: bold;
-    color: white;
-    pointer-events: none;
 }
 
 @keyframes hover-float {
@@ -69,29 +55,10 @@ const styles = `
     }
 }
 
-/* --- Left Section: Host Spotlight --- */
 .host-section {
     display: flex;
     justify-content: center;
-}
-
-@media (min-width: 1024px) {
-    .host-section {
-        justify-content: flex-end;
-    }
-}
-
-.spotlight-wrapper {
-    position: relative;
-    cursor: pointer;
-}
-
-
-
-.host-image-container {
-    width: 300px; 
-    height: 400px;
-    background: rgba(0,0,0,0.2);
+    height: 400px; /* Placeholder height */
 }
 
 /* --- Right Section: Player Network --- */
@@ -100,16 +67,9 @@ const styles = `
     justify-content: center;
     position: relative;
     width: 100%;
-    height: 20rem;
-    max-width: 28rem;
+    height: 25rem; /* Increased slightly for larger circles */
+    max-width: 30rem;
     margin: 0 auto;
-}
-
-@media (min-width: 1024px) {
-    .network-section {
-        justify-content: flex-start;
-        margin: 0;
-    }
 }
 
 /* Nodes Container */
@@ -135,50 +95,61 @@ const styles = `
     animation: fade-in-up 0.6s ease-out backwards;
 }
 
+/* --- UPDATED AVATAR CIRCLE FOR IMAGES --- */
 .avatar-circle {
-    width: 4rem;
-    height: 4rem;
+    width: 4.5rem;
+    height: 4.5rem;
     border-radius: 50%;
+    /* Important for images: hide anything outside the circle */
+    overflow: hidden; 
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
     border: 4px solid rgba(255, 255, 255, 0.1);
+    background-color: #000; /* Default bg behind image */
 }
 
 @media (min-width: 768px) {
     .avatar-circle {
-        width: 5rem;
-        height: 5rem;
+        width: 6rem;
+        height: 6rem;
     }
 }
 
-.avatar-circle:hover {
-    transform: scale(1.1);
-    filter: brightness(1.3);
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.6), 0 0 60px currentColor, 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+/* --- NEW CSS FOR THE IMAGES INSIDE CIRCLES --- */
+.node-image {
+    width: 100%;
+    height: 100%;
+    /* This ensures the image fills the circle without stretching */
+    object-fit: cover; 
 }
 
-.avatar-icon {
-    width: 2rem;
-    height: 2rem;
-    color: white;
+/* --- UNLOCKED HOVER --- */
+.avatar-circle:not(.locked):hover {
+    transform: scale(1.15);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    border-color: white;
 }
 
-@media (min-width: 768px) {
-    .avatar-icon {
-        width: 2.5rem;
-        height: 2.5rem;
-    }
+/* --- LOCKED STATE STYLES --- */
+.avatar-circle.locked {
+    background-color: #222 !important; 
+    border-color: #444;
+    cursor: not-allowed;
+    /* If we had images in locked state, this would grayscale them:
+       filter: grayscale(100%) brightness(70%); */
+    box-shadow: none;
 }
 
 .player-label {
     color: #d1d5db;
     font-size: 0.875rem;
-    font-weight: 500;
-    letter-spacing: 0.025em;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    text-transform: uppercase;
 }
 
 @media (min-width: 768px) {
@@ -193,29 +164,42 @@ const styles = `
 }
 `;
 
-const UserIcon = () => (
-    <svg className="avatar-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-    </svg>
+// Lock Icon
+const LockIcon = () => (
+    <div style={{ fontSize: '2.5rem' }}>🔒</div>
 );
 
-const PlayerNode = ({ id, label, position, color, onClick, fullCharData }) => (
-    // We pass fullCharData back to the click handler so we know where to move
-    <div className="node-position" style={{ ...position, animationDelay: `${id * 150}ms` }} onClick={() => onClick(fullCharData)}>
+// 2. UPDATED PLAYER NODE TO ACCEPT IMAGE
+const PlayerNode = ({ id, label, image, position, color, onClick, isLocked }) => (
+    <div
+        className="node-position"
+        style={{ ...position, animationDelay: `${id * 150}ms` }}
+        onClick={() => onClick(id, isLocked, position)}
+    >
         <div className="player-node">
-            <div className="avatar-circle" style={{ backgroundColor: color }}>
-                <UserIcon />
+            <div
+                className={`avatar-circle ${isLocked ? 'locked' : ''}`}
+                // We use the specific color for the border glow on hover, else grey
+                style={{ borderColor: isLocked ? '#444' : color }}
+            >
+                {/* SHOW LOCK OR SHOW IMAGE */}
+                {isLocked ? (
+                    <LockIcon />
+                ) : (
+                    <img src={image} alt={label} className="node-image" />
+                )}
             </div>
-            <span className="player-label">{label}</span>
+            <span className="player-label" style={{ opacity: isLocked ? 0.6 : 1 }}>
+                {label}
+            </span>
         </div>
     </div>
 );
 
 function Room1() {
     const navigate = useNavigate();
-
     // Initial position of the "Player" (Center of the network area)
-    const [playerPos, setPlayerPos] = useState({ top: '50%', left: '-180%' });
+    const [playerPos, setPlayerPos] = useState({ top: '50%', left: '-150%' });
 
     useEffect(() => {
         const styleSheet = document.createElement("style");
@@ -224,23 +208,41 @@ function Room1() {
         return () => document.head.removeChild(styleSheet);
     }, []);
 
-    const characters = [
-        { id: 1, label: 'Raileygh', position: { top: '20%', left: '25%' }, color: '#7c3aed' },
-        { id: 2, label: 'Luffy', position: { top: '55%', left: '75%' }, color: '#db2777' },
-        { id: 3, label: 'Zoro', position: { top: '85%', left: '40%' }, color: '#ea580c' },
+    // 3. MERGE POSITION DATA WITH IMPORTED CHARACTER DATA
+    // We map over your positions and grab the image/name from the imported data file
+    const charactersList = [
+        { id: 1, ...charactersData['1'], position: { top: '15%', left: '30%' }, color: '#ffd700' }, // Rayleigh (Gold)
+        { id: 3, ...charactersData['3'], position: { top: '80%', left: '35%' }, color: '#22c55e' }, // Zoro (Green)
+        { id: 2, ...charactersData['2'], position: { top: '50%', left: '80%' }, color: '#ef4444' }, // Luffy (Red)
     ];
 
-    const handleNodeClick = (character) => {
-        // 1. Move the Blue Player Circle
-        // We use calc() to keep the original percentage but add 5rem (approx 80px) to the right
+    // Helper to check locks based on localStorage
+    const isCharacterUnlocked = (id) => {
+        // ID 1 (Rayleigh) is always unlocked by default
+        if (String(id) === "1") return true;
+        // Check local storage for others
+        return localStorage.getItem(`unlocked_${id}`) === 'true';
+    };
+
+    const handleNodeClick = (id, isLocked, position) => {
+        if (isLocked) {
+            toast.error("🔒 Personnage verrouillé ! Finis le précédent d'abord.", {
+                position: "bottom-center",
+                theme: "colored",
+                autoClose: 2000
+            });
+            return;
+        }
+
+        // Move the Blue Player Circle
         setPlayerPos({
-            top: character.position.top,
-            left: `calc(${character.position.left} + 5rem)`
+            top: position.top,
+            left: `calc(${position.left} + 4rem)`
         });
 
-        // 2. Wait for the movement animation (0.8s) before redirecting
+        // Wait for animation then redirect
         setTimeout(() => {
-            navigate(`/character/${character.id}`);
+            navigate(`/character/${id}`);
         }, 1000);
     };
 
@@ -248,24 +250,27 @@ function Room1() {
         <div className="nerd-zone-container">
             <div className="layout-grid">
                 <div className="host-section">
+                    {/* Left side placeholder */}
                 </div>
 
                 <div className="network-section">
-
                     {/* The Blue Player Circle */}
                     <div className="main-player" style={{ top: playerPos.top, left: playerPos.left }}>
-                        <span className="player-name-tag"></span>
                     </div>
 
                     <div className="nodes-container">
-                        {characters.map(char => (
-                            <PlayerNode
-                                key={char.id}
-                                {...char}
-                                fullCharData={char}
-                                onClick={handleNodeClick}
-                            />
-                        ))}
+                        {charactersList.map(char => {
+                            const unlocked = isCharacterUnlocked(char.id);
+                            return (
+                                <PlayerNode
+                                    key={char.id}
+                                    {...char}
+                                    // image and name are now passed via {...char}
+                                    isLocked={!unlocked}
+                                    onClick={handleNodeClick}
+                                />
+                            );
+                        })}
                     </div>
                 </div>
             </div>

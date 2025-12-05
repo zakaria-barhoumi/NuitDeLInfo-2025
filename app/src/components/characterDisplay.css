@@ -1,52 +1,53 @@
+/* src/components/characterDisplay.css */
+
 .character-page-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    width : 100vw;
-    background-color: #f0f2f5;
+    min-width: 100vw;
     padding: 20px;
+    /* Background Image Settings */
     background-image: url('https://wallpaper.forfun.com/fetch/d7/d7a12cf1106ee202c717b2617d457b95.jpeg');
-
-    /* This ensures the image covers the whole screen nicely */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-attachment: fixed; /* Keeps background still while scrolling */
+    background-attachment: fixed;
 }
-
 
 .character-img {
     width: 300px;
-    max-height: 400px; /* Prevents tall images from taking over the screen */
     height: auto;
-    object-fit: contain; /* Ensures the image doesn't stretch weirdly */
+    object-fit: contain;
     filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3));
     z-index: 2;
-    transition: transform 0.3s ease; /* Smooth interaction */
+    transition: transform 0.3s ease;
 }
 
-/* Optional: slight hover effect on the character */
-.character-img:hover {
-    transform: scale(1.05);
-}
-
+/* --- THE SPEECH BUBBLE --- */
 .speech-bubble {
     position: relative;
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.95);
     border-radius: 10px;
-    padding: 20px 30px;
+    padding: 25px 30px;
     margin-top: 25px;
     text-align: center;
     color: #333;
     font-family: sans-serif;
     font-size: 1.2rem;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     max-width: 600px;
+    width: 100%; /* Ensure it doesn't shrink too much */
     border: 2px solid #333;
+
+    /* Flexbox to organize text and buttons vertically */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between text and buttons */
 }
 
+/* Tail of the bubble */
 .speech-bubble::after {
     content: '';
     position: absolute;
@@ -55,22 +56,59 @@
     width: 0;
     height: 0;
     border: 20px solid transparent;
-    border-bottom-color: #ffffff;
+    border-bottom-color: rgba(255, 255, 255, 0.95);
     border-top: 0;
     margin-left: -20px;
     margin-top: -20px;
 }
 
-.speech-bubble::before {
-    content: '';
-    position: absolute;
-    top: -3px;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border: 22px solid transparent;
-    border-bottom-color: #333;
-    border-top: 0;
-    margin-left: -22px;
-    margin-top: -20px;
+/* --- BUTTONS STYLING --- */
+
+.validation-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.validation-buttons button {
+    padding: 12px 15px;
+    font-size: 1rem;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+
+    /* DEFAULT: Black Background, White Text */
+    background-color: #000000;
+    color: #ffffff;
+    border: 1px solid #333;
+}
+
+.validation-buttons button:hover:not(:disabled) {
+    background-color: #333; /* Dark Grey on Hover */
+    transform: translateY(-2px);
+}
+
+/* --- SUCCESS STATE (Green) --- */
+.validation-buttons button.correct-answer {
+    background-color: #28a745 !important;
+    border-color: #1e7e34 !important;
+    color: white !important;
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+}
+
+/* --- ERROR STATE (Red) --- */
+.validation-buttons button.wrong-answer {
+    background-color: #dc3545 !important;
+    border-color: #bd2130 !important;
+    color: white !important;
+    opacity: 1 !important; /* Ensure it stays bright */
+}
+
+/* Disabled state */
+.validation-buttons button:disabled {
+    opacity: 0.7;
+    cursor: default;
 }
